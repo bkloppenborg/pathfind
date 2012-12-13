@@ -26,10 +26,5 @@ add_library(pathfind SHARED EXCLUDE_FROM_ALL ${SOURCE})
 
 add_library(pathfind_static STATIC ${SOURCE})
 
-# Build tests:
-add_executable(liboi_tests ${TESTS})
-target_link_libraries(liboi_tests gtest oi_static)
-add_test(liboi_tests liboi_tests)
-
 install(TARGETS pathfind_static DESTINATION lib)
 install(FILES pathfind.hpp DESTINATION include)

@@ -23,7 +23,7 @@ project(pathfind)
 file(GLOB SOURCE *.cpp)
 
 # build the static and dynamic libraries
-add_library(pathfind SHARED EXCLUDE_FROM_ALL ${SOURCE})
+add_library(pathfind SHARED ${SOURCE})
 add_library(pathfind_static STATIC ${SOURCE})
 
 # build the example application

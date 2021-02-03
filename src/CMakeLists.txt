@@ -24,10 +24,12 @@ file(GLOB SOURCE *.cpp)
 
 # build the static and dynamic libraries
 add_library(pathfind SHARED ${SOURCE})
+target_include_directories(pathfind PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
 add_library(pathfind_static STATIC ${SOURCE})
+target_include_directories(pathfind_static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # build the example application
-include_directories(".")
 add_executable(example example.cpp)
 target_link_libraries(example pathfind_static)
 

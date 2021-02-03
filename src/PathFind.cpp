@@ -17,8 +17,9 @@
  *  License along with LIBOI.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <cstring>
 #include "PathFind.hpp"
+
+#include <cstring>
 
 std::string PathFind::do_GetModuleFileNameW(int max_path)
 {

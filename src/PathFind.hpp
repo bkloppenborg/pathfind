@@ -1,11 +1,4 @@
 /*
- * PathFinding.h
- *
- *  Created on: Oct. 25, 2011
- *      Author: bkloppenborg
- */
-
-/*
  * Copyright (c) 2012 Brian Kloppenborg
  *
  * This file is part of the Path Finding Library (PathFind).
@@ -33,9 +26,28 @@
 #endif
 
 #include <string>
-using namespace std;
 
-string do_GetModuleFileNameW();
-string do_NSGetExecutablePath();
-string do_readlink(std::string const& path);
-string FindExecutable();
+namespace PathFind {
+
+  /// Windows only: Find the path of the current executable using
+  /// GetModuleFileNameW
+  /// \param max_path Maximum length of path to accept.
+  std::string do_GetModuleFileNameW(int max_path = 1024);
+
+
+  /// Apple/Mac only: Find the path of the current executable using
+  /// _NSGetExecutablePath
+  /// \param max_path Maximum length of path to accept.
+  std::string do_NSGetExecutablePath(int max_path = 1024);
+
+  /// Linux, Solaris, FreeBSD (if it has procfs) only: Find the path of the
+  /// current executable using do_readlink
+  /// \param max_path Maximum length of path to accept.
+  std::string do_readlink(std::string const& path, int max_path = 1024);
+
+  /// Find the path to the current executable regardless of operating system
+  /// \param max_path Maximum length of path to accept.
+  /// \return Path to the current executable
+  std::string FindExecutable(int max_path = 1024);
+
+}; // namespace PathFind

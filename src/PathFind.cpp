@@ -1,11 +1,4 @@
 /*
- * PathFinding.cpp
- *
- *  Created on: Oct. 25, 2011
- *      Author: bkloppenborg
- */
-
-/*
  * Copyright (c) 2012 Brian Kloppenborg
  *
  * This file is part of the Path Finding Library (PathFind).
@@ -24,67 +17,73 @@
  *  License along with LIBOI.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <cstring>
 #include "PathFind.hpp"
 
-/// Find the path of the current executable using GetModuleFileNameW (Windows)
-string do_GetModuleFileNameW()
+std::string PathFind::do_GetModuleFileNameW(int max_path)
 {
 #if defined (WIN32) // Windows
+  WCHAR buff[max_path + 1];
+  memset(buff, '\0', max_path + 1);
+
 	HMODULE hModule = GetModuleHandleW(NULL);
-	WCHAR path[MAX_PATH];
-	GetModuleFileNameW(hModule, path, MAX_PATH);
+	GetModuleFileNameW(hModule, buff, max_path);
 #else
-	string path = "";
+  char buff[max_path + 1];
+  memset(buff, '\0', max_path + 1);
 #endif
 
-	return string(path);
+	return std::string(buff);
 }
 
-/// Find the path of the current executable using _NSGetExecutablePath (Apple/Mac)
-string do_NSGetExecutablePath()
+std::string PathFind::do_NSGetExecutablePath(int max_path)
 {
-#if defined (__APPLE__) || defined(MACOSX)	// Apple / OSX
-	char path[1024];
-	uint32_t size = sizeof(path);
-	if (_NSGetExecutablePath(path, &size) == 0)
-	    printf("executable path is %s\n", path);
-	else
-	    printf("buffer too small; need size %u\n", size);
-#else
-	string path = "";
-#endif
-
-	return string(path);
-}
-
-/// Find the path of the current executable using do_readlink (BSD, Solaris, Linux)
-string do_readlink(std::string const& path)
-{
-    char buff[1024];
-#if defined (BSD) || defined(__gnu_linux__) || defined(sun) || defined(__sun)	 // BSD, Linux, Solaris
-    ssize_t len = ::readlink(path.c_str(), buff, sizeof(buff)-1);
-#endif
-
-    if ( len > 0 )
-        return string(buff, len);
-    else
-        return string();
-}
-
-string FindExecutable()
-{
-	string path;
+	char buff[max_path + 1];
+  memset(buff, '\0', max_path + 1);
 
 #if defined (__APPLE__) || defined(MACOSX)	// Apple / OSX
-	path = do_NSGetExecutablePath();
+	_NSGetExecutablePath(buff, &max_path);
+#endif
+
+	return std::string(buff);
+}
+
+std::string PathFind::do_readlink(std::string const& path, int max_path)
+{
+  // allocate a buffer in which to store the path.
+	char buff[max_path + 1];
+  memset(buff, '\0', max_path + 1);
+
+#if defined (BSD) || defined(__gnu_linux__) || defined(sun) || defined(__sun)
+  size_t len = ::readlink(path.c_str(), buff, max_path);
+#endif
+
+  return std::string(buff);
+}
+
+/// Find the path to the current executable
+std::string PathFind::FindExecutable(int max_path)
+{
+
+	std::string path("");
+
+  // Enforce maximum path length limit on Windows.
+#if defined (WIN32)
+  if(MAX_PATH < max_path)
+    max_path = MAX_PATH;
+#endif
+
+  // OS-specific calls to find the path to the current executable.
+#if defined (__APPLE__) || defined(MACOSX)	// Apple / OSX
+	path = PathFind::do_NSGetExecutablePath(max_path);
 #elif defined (WIN32) // Windows
-	path = do_GetModuleFileNameW();
+	path = PathFind::do_GetModuleFileNameW(max_path);
 #elif defined (BSD) // BSD variants
-	path = do_readlink("/proc/curproc/file");
+	path = PathFind::do_readlink("/proc/curproc/file", max_path);
 #elif defined (sun) || defined(__sun) // Solaris
-	path = do_readlink("/proc/self/path/a.out");
+	path = PathFind::do_readlink("/proc/self/path/a.out", max_path);
 #elif defined (__gnu_linux__)	// Linux
-	path = do_readlink("/proc/self/exe");
+	path = PathFind::do_readlink("/proc/self/exe", max_path);
 #endif
 
 	return path;

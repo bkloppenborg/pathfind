@@ -42,8 +42,10 @@ std::string PathFind::do_NSGetExecutablePath(int max_path)
 	char buff[max_path + 1];
   memset(buff, '\0', max_path + 1);
 
-#if defined (__APPLE__) || defined(MACOSX)	// Apple / OSX
-	_NSGetExecutablePath(buff, &max_path);
+#if defined(__APPLE__) || defined(MACOSX) // Apple / OSX
+	uint32_t max_path_ = max_path;
+	assert(static_cast<int>(max_path_) == max_path && "max_path is not representable");
+	_NSGetExecutablePath(buff, &max_path_);
 #endif
 
 	return std::string(buff);

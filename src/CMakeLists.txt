@@ -35,4 +35,4 @@ target_link_libraries(example pathfind_static)
 
 # installation targets
 install(TARGETS pathfind_static DESTINATION lib)
-install(FILES PathFind.hpp DESTINATION include)
+install(FILES pathfind.hpp DESTINATION include)

@@ -1,5 +1,5 @@
 #include <iostream>
-#include <PathFind.hpp>
+#include <pathfind.hpp>
 
 int main()
 {

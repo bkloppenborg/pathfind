@@ -17,7 +17,7 @@
  *  License along with LIBOI.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "PathFind.hpp"
+#include "pathfind.hpp"
 
 #include <cstring>
 

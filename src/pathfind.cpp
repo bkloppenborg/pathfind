@@ -85,7 +85,7 @@ std::string PathFind::FindExecutable(int max_path)
 	path = PathFind::do_readlink("/proc/curproc/file", max_path);
 #elif defined (sun) || defined(__sun) // Solaris
 	path = PathFind::do_readlink("/proc/self/path/a.out", max_path);
-#elif defined (__gnu_linux__)	// Linux
+#elif defined (__gnu_linux__)	|| defined (__linux__)// Linux
 	path = PathFind::do_readlink("/proc/self/exe", max_path);
 #endif
 

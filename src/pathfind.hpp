@@ -21,7 +21,7 @@
 #include <mach-o/dyld.h>
 #elif defined (WIN32) // Windows
 // No includes necessary?
-#elif defined (BSD) || defined(__gnu_linux__) || defined(sun) || defined(__sun)	 // BSD, Linux, Solaris
+#elif defined (BSD) || defined(__gnu_linux__) || defined(__linux__) || defined(sun) || defined(__sun)	 // BSD, Linux, Solaris
 #include <unistd.h>
 #endif
 

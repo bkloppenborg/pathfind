@@ -57,7 +57,7 @@ std::string PathFind::do_readlink(std::string const& path, int max_path)
 	char buff[max_path + 1];
   memset(buff, '\0', max_path + 1);
 
-#if defined (BSD) || defined(__gnu_linux__) || defined(sun) || defined(__sun)
+#if defined(BSD) || defined(__gnu_linux__) || defined(__linux__) || defined(sun) || defined(__sun)
   size_t len = ::readlink(path.c_str(), buff, max_path);
 #endif
 

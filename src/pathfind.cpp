@@ -27,34 +27,34 @@ std::string PathFind::do_GetModuleFileNameW(int max_path)
   WCHAR buff[max_path + 1];
   memset(buff, '\0', max_path + 1);
 
-	HMODULE hModule = GetModuleHandleW(NULL);
-	GetModuleFileNameW(hModule, buff, max_path);
+  HMODULE hModule = GetModuleHandleW(NULL);
+  GetModuleFileNameW(hModule, buff, max_path);
 #else
   char buff[max_path + 1];
   memset(buff, '\0', max_path + 1);
 #endif
 
-	return std::string(buff);
+  return std::string(buff);
 }
 
 std::string PathFind::do_NSGetExecutablePath(int max_path)
 {
-	char buff[max_path + 1];
+  char buff[max_path + 1];
   memset(buff, '\0', max_path + 1);
 
 #if defined(__APPLE__) || defined(MACOSX) // Apple / OSX
-	uint32_t max_path_ = max_path;
-	assert(static_cast<int>(max_path_) == max_path && "max_path is not representable");
-	_NSGetExecutablePath(buff, &max_path_);
+  uint32_t max_path_ = max_path;
+  assert(static_cast<int>(max_path_) == max_path && "max_path is not representable");
+  _NSGetExecutablePath(buff, &max_path_);
 #endif
 
-	return std::string(buff);
+  return std::string(buff);
 }
 
 std::string PathFind::do_readlink(std::string const& path, int max_path)
 {
   // allocate a buffer in which to store the path.
-	char buff[max_path + 1];
+  char buff[max_path + 1];
   memset(buff, '\0', max_path + 1);
 
 #if defined(BSD) || defined(__gnu_linux__) || defined(__linux__) || defined(sun) || defined(__sun)
@@ -67,8 +67,7 @@ std::string PathFind::do_readlink(std::string const& path, int max_path)
 /// Find the path to the current executable
 std::string PathFind::FindExecutable(int max_path)
 {
-
-	std::string path("");
+  std::string path("");
 
   // Enforce maximum path length limit on Windows.
 #if defined (WIN32)
@@ -77,17 +76,17 @@ std::string PathFind::FindExecutable(int max_path)
 #endif
 
   // OS-specific calls to find the path to the current executable.
-#if defined (__APPLE__) || defined(MACOSX)	// Apple / OSX
-	path = PathFind::do_NSGetExecutablePath(max_path);
+#if defined (__APPLE__) || defined(MACOSX)  // Apple / OSX
+  path = PathFind::do_NSGetExecutablePath(max_path);
 #elif defined (WIN32) // Windows
-	path = PathFind::do_GetModuleFileNameW(max_path);
+  path = PathFind::do_GetModuleFileNameW(max_path);
 #elif defined (BSD) // BSD variants
-	path = PathFind::do_readlink("/proc/curproc/file", max_path);
+  path = PathFind::do_readlink("/proc/curproc/file", max_path);
 #elif defined (sun) || defined(__sun) // Solaris
-	path = PathFind::do_readlink("/proc/self/path/a.out", max_path);
-#elif defined (__gnu_linux__)	|| defined (__linux__)// Linux
-	path = PathFind::do_readlink("/proc/self/exe", max_path);
+  path = PathFind::do_readlink("/proc/self/path/a.out", max_path);
+#elif defined (__gnu_linux__)  || defined (__linux__)// Linux
+  path = PathFind::do_readlink("/proc/self/exe", max_path);
 #endif
 
-	return path;
+  return path;
 }

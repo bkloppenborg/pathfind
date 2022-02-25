@@ -24,11 +24,11 @@
 std::string PathFind::do_GetModuleFileNameW(int max_path)
 {
 #if defined (WIN32) // Windows
-  WCHAR buff[max_path + 1];
-  memset(buff, '\0', max_path + 1);
+  TCHAR buff[MAX_PATH];
+  memset(buff, '\0', max_path);
 
-  HMODULE hModule = GetModuleHandleW(NULL);
-  GetModuleFileNameW(hModule, buff, max_path);
+  HMODULE hModule = GetModuleHandle(NULL);
+  GetModuleFileName(hModule, buff, max_path);
 #else
   char buff[max_path + 1];
   memset(buff, '\0', max_path + 1);
@@ -68,12 +68,6 @@ std::string PathFind::do_readlink(std::string const& path, int max_path)
 std::string PathFind::FindExecutable(int max_path)
 {
   std::string path("");
-
-  // Enforce maximum path length limit on Windows.
-#if defined (WIN32)
-  if(MAX_PATH < max_path)
-    max_path = MAX_PATH;
-#endif
 
   // OS-specific calls to find the path to the current executable.
 #if defined (__APPLE__) || defined(MACOSX)  // Apple / OSX

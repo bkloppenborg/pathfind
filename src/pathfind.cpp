@@ -23,51 +23,62 @@
 
 std::string PathFind::do_GetModuleFileNameW(int max_path)
 {
+  std::string ret;
+
 #if defined (WIN32) // Windows
   TCHAR buff[MAX_PATH];
   memset(buff, '\0', max_path);
 
   HMODULE hModule = GetModuleHandle(NULL);
   GetModuleFileName(hModule, buff, max_path);
-#else
-  char buff[max_path + 1];
-  memset(buff, '\0', max_path + 1);
+
+  ret = std::move(std::string(buff));
 #endif
 
-  return std::string(buff);
+  return ret;
 }
 
 std::string PathFind::do_NSGetExecutablePath(int max_path)
 {
-  char buff[max_path + 1];
-  memset(buff, '\0', max_path + 1);
+  std::string ret;
 
 #if defined(__APPLE__) || defined(MACOSX) // Apple / OSX
+  char* buff = new char[max_path + 1];
+  memset(buff, '\0', max_path + 1);
+
   uint32_t max_path_ = max_path;
   assert(static_cast<int>(max_path_) == max_path && "max_path is not representable");
   _NSGetExecutablePath(buff, &max_path_);
+
+  ret = std::move(std::string(buff));
+  delete[] buff;
 #endif
 
-  return std::string(buff);
+  return ret;
 }
 
 std::string PathFind::do_readlink(std::string const& path, int max_path)
 {
   // allocate a buffer in which to store the path.
-  char buff[max_path + 1];
-  memset(buff, '\0', max_path + 1);
+  std::string ret;
 
 #if defined(BSD) || defined(__gnu_linux__) || defined(__linux__) || defined(sun) || defined(__sun)
+  char* buff = new char[max_path + 1];
+  memset(buff, '\0', max_path + 1);
+
   size_t len = ::readlink(path.c_str(), buff, max_path);
+
+  ret = std::move(std::string(buff));
+  delete[] buff;
 #endif
 
-  return std::string(buff);
+  return ret;
 }
 
 /// Find the path to the current executable
 std::string PathFind::FindExecutable(int max_path)
 {
-  std::string path("");
+  std::string path;
 
   // OS-specific calls to find the path to the current executable.
 #if defined (__APPLE__) || defined(MACOSX)  // Apple / OSX

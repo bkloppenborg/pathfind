@@ -20,7 +20,7 @@
 #if defined (__APPLE__) || defined(MACOSX)	// Apple
 #include <mach-o/dyld.h>
 #elif defined (WIN32) // Windows
-// No includes necessary?
+#include <windows.h>
 #elif defined (BSD) || defined(__gnu_linux__) || defined(__linux__) || defined(sun) || defined(__sun)	 // BSD, Linux, Solaris
 #include <unistd.h>
 #endif

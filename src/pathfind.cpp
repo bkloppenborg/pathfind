@@ -26,13 +26,11 @@ std::string PathFind::do_GetModuleFileNameW(int max_path)
   std::string ret;
 
 #if defined (WIN32) // Windows
-  TCHAR buff[MAX_PATH];
-  memset(buff, '\0', max_path);
-
+  TCHAR buff[MAX_PATH]{};
   HMODULE hModule = GetModuleHandle(NULL);
-  GetModuleFileName(hModule, buff, max_path);
+  GetModuleFileNameA(hModule, buff, max_path);
 
-  ret = std::move(std::string(buff));
+  ret = buff;
 #endif
 
   return ret;

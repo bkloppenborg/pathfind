@@ -19,6 +19,7 @@
 
 #include "pathfind.hpp"
 
+#include <cassert>
 #include <cstring>
 
 std::string PathFind::do_GetModuleFileNameW(int max_path)
